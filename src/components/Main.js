@@ -40,7 +40,6 @@ class ImgFigure extends React.Component {
     } else {
       this.props.center();
     }
-
     e.stopPropagation();
     e.preventDefault();
   }
@@ -51,24 +50,25 @@ class ImgFigure extends React.Component {
     if (this.props.arrange.pos) {
       styleObj = this.props.arrange.pos;
     }
-    
+
     //如果图片旋转角度有值，且不是0
     if(this.props.arrange.rotate){
       ['MozTransform','msTransform','WebkitTransform','transform'].forEach(function(value){
         styleObj[value] = 'rotate('+this.props.arrange.rotate+'deg)';
       }.bind(this));
     }
-    
+
     //添加z-index 避免遮盖
     if(this.props.arrange.isCenter){
       styleObj.zIndex = 11;
+      styleObj.top = 95;
     } else {
       styleObj.zIndex = 0;
     }
-    
+
     var igmFigureClassName = 'img-figure';
     igmFigureClassName += this.props.arrange.isInverse?' is-inverse':'';
-    
+
     return ( < figure className = {igmFigureClassName}
       style = {
         styleObj
@@ -84,7 +84,7 @@ class ImgFigure extends React.Component {
       alt = {
         this.props.data.title
       }
-      
+
       /> < figcaption >
         < h2 className = "img-title" >
           {this.props.data.title}
@@ -106,23 +106,23 @@ class ControllerUnit extends React.Component {
     } else {
       this.props.center();
     }
-    
+
     e.stopPropagation();
     e.preventDefault();
   }
   render() {
     var controllerUintClassName ='controller-unit';
-    
+
     // 如果对应居中的图片
     if(this.props.arrange.isCenter) {
       controllerUintClassName += ' is-center';
     }
-      
+
     // 如果对应翻转的图片
     if(this.props.arrange.isInverse) {
       controllerUintClassName += ' is-inverse';
     }
-    
+
     return (
         <span className={controllerUintClassName} onClick={this.handleClick.bind(this)}></span>
     );
@@ -201,7 +201,7 @@ class AppComponent extends React.Component {
       this.Constant.vPosRange.x[1] = halfStageW;
       this.rearrange(0);
     }
-          
+
   /*
   * 翻转图片
   * @params index 输入当前被执行inverse操作的图片对应的index
@@ -210,9 +210,9 @@ class AppComponent extends React.Component {
   inverse(index) {
     return function (){
       var imgArrangeArr = this.state.imgArrangeArr;
-      
+
       imgArrangeArr[index].isInverse = !imgArrangeArr[index].isInverse;
-      
+
       this.setState({
         imgArrangeArr: imgArrangeArr
       });
@@ -301,7 +301,6 @@ class AppComponent extends React.Component {
       imgArrangeArr: imgArrangeArr
     });
   }
-
   render() {
     var controllerUnits = [],
       imgFigures = [];
@@ -335,16 +334,20 @@ class AppComponent extends React.Component {
           center ={this.center(index).bind(this)}
           />);
         controllerUnits.push(<ControllerUnit key ={index} arrange={this.state.imgArrangeArr[index]} inverse={this.inverse(index).bind(this)} center={this.center(index).bind(this)}/>)
-        
+
         }.bind(this));
+
+
       return ( < section className = "stage"
-        ref = "stage" > < section className = "img-sec" > {
+        ref = "stage" >
+            < section className = "img-sec" > {
           imgFigures
         } < /section>  < nav className = "controller-nav" > {
         controllerUnits
       } < /nav> < /section > );
   }
 }
+
 AppComponent.defaultProps = {};
 
 export default AppComponent;
